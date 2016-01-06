@@ -26,9 +26,18 @@ close($concurrency_lock);
 # Include all packages being used #
 ###################################
 
-#
 
+############################################
+# Initialization of all required variables #
+############################################
 
+# Indicate where the initialization variables for the main testframe iscoming from
+my %test_config = (
+	config_dir => "configuration_files"
+	config_file => "run_tests.cfg"
+);
+
+create_testFrame_hash();
 ##########################################
 # Extraction and Execution of Test Cases #
 ##########################################
@@ -44,4 +53,13 @@ remove_lock();
 sub remove_lock
 {
     `rm -f $lock_file`;
+}
+
+sub create_testFrame_hash
+{
+	populate_hash($test_config{config_dir} . "/" . $test_config{config_file}, my %config_in) or die "Couldn't read declared config file: $test_config{config_dir} or $test_config{config_file}\n";
+	foreach my $key (keys %{$config_in{''}})
+	{
+		$test_config{$key} = $config_in{''}{$key};
+	}
 }
