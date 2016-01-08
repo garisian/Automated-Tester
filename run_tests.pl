@@ -25,19 +25,24 @@ close($concurrency_lock);
 ###################################
 # Include all packages being used #
 ###################################
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+
+use modules::Common::Com_utilities;
 
 
 ############################################
 # Initialization of all required variables #
 ############################################
 
-# Indicate where the initialization variables for the main testframe iscoming from
+# Indicate where the initialization variables for the main testframe is coming from
 my %test_config = (
-	config_dir => "configuration_files"
+	config_dir => "configuration_files",
 	config_file => "run_tests.cfg"
 );
 
-create_testFrame_hash();
+#make_hash(%test_config,$test_config{config_dir}."/".$test_config{config_file}) or die "Couldn't make proper hash. Wrong format\n";
+run_tests();
 ##########################################
 # Extraction and Execution of Test Cases #
 ##########################################
@@ -55,11 +60,13 @@ sub remove_lock
     `rm -f $lock_file`;
 }
 
-sub create_testFrame_hash
+# Takes the path to a file and updates the hash with all variables in the file name 
+sub make_hash
 {
-	populate_hash($test_config{config_dir} . "/" . $test_config{config_file}, my %config_in) or die "Couldn't read declared config file: $test_config{config_dir} or $test_config{config_file}\n";
-	foreach my $key (keys %{$config_in{''}})
-	{
-		$test_config{$key} = $config_in{''}{$key};
-	}
 }
+
+# The function that extracts the variables in configuration_files/test_list.pl and runs each tests
+sub run_tests
+{   
+}
+
