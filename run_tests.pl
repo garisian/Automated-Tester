@@ -42,13 +42,17 @@ my %test_config = (
 );
 
 #make_hash(%test_config,$test_config{config_dir}."/".$test_config{config_file}) or die "Couldn't make proper hash. Wrong format\n";
-run_tests();
+
 ##########################################
 # Extraction and Execution of Test Cases #
 ##########################################
 
+run_tests();
+
 # At this point test cases are finished, so we can remove lock and terminate script
 remove_lock();
+
+
 
 #########################
 # Function Declarations #
@@ -67,6 +71,11 @@ sub make_hash
 
 # The function that extracts the variables in configuration_files/test_list.pl and runs each tests
 sub run_tests
-{   
+{
+    #open a file called configuration_files/test_lists.cfg   
+    #go through each line in the file that is not commented
+    #example: test_1.pl   test_1.cfg    *4    (hello my name is candy)
+    #inside the while loop, take each line and split in white space. 
+    #find a way to put configuration files into the testing condition
 }
 
