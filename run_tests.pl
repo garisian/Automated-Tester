@@ -46,13 +46,10 @@ my %test_config = (
 ##########################################
 # Extraction and Execution of Test Cases #
 ##########################################
-
 run_tests();
 
 # At this point test cases are finished, so we can remove lock and terminate script
 remove_lock();
-
-
 
 #########################
 # Function Declarations #
@@ -77,5 +74,12 @@ sub run_tests
     #example: test_1.pl   test_1.cfg    *4    (hello my name is candy)
     #inside the while loop, take each line and split in white space. 
     #find a way to put configuration files into the testing condition
+
+    open(my $fh, "<",$test_config{config_dir}."/test_list.cfg" ) or die "cannot open test_list.cfg file";
+    while(my $row = <$fh>)
+    {
+        chomp $row;
+        print "$row\n";
+    }
 }
 
