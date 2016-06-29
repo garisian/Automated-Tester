@@ -142,8 +142,12 @@ sub run_tests
                 # Check if testcase pass' and update respective elements
                 print_to_log("Finished Executing Test $current_test_number\n\n",$logfile_name);   
                 $total_tests += 1;   
-                $successfully_run += 1;    
-                sleep($time_interval);     
+                $successfully_run += 1;
+                if($test_counter+1 < $num_of_tests)
+                { 
+                    print_to_log("sleeping for $time_interval seconds\n\n",$logfile_name);  
+                    sleep($time_interval);                    
+                }        
             }
         }
     }
