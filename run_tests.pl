@@ -142,7 +142,8 @@ sub run_tests
                 # Check if testcase pass' and update respective elements
                 print_to_log("Finished Executing Test $current_test_number\n\n",$logfile_name);   
                 $total_tests += 1;   
-                $successfully_run += 1;         
+                $successfully_run += 1;    
+                sleep($time_interval);     
             }
         }
     }
