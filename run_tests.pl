@@ -27,8 +27,8 @@ close($concurrency_lock);
 ###################################
 use FindBin;
 use lib "$FindBin::Bin/../lib";
-
-use modules::Common::Com_utilities;
+use POSIX qw(strftime);                       # Used to get time stamps for log files
+use modules::Common::Com_utilities;           # Has common features that are predefined  
 
 
 ############################################
@@ -37,16 +37,21 @@ use modules::Common::Com_utilities;
 
 # Indicate where the initialization variables for the main testframe is coming from
 my %test_config = (
+    log_dir => "log_files",
     test_dir => "test_files",
 	config_dir => "configuration_files",
 	config_file => "run_tests.cfg"
 );
+my $logfile_name = '';
 
 #make_hash(%test_config,$test_config{config_dir}."/".$test_config{config_file}) or die "Couldn't make proper hash. Wrong format\n";
 
 ##########################################
 # Extraction and Execution of Test Cases #
 ##########################################
+# Make the log files 
+make_logs();
+
 run_tests();
 
 # At this point test cases are finished, so we can remove lock and terminate script
@@ -60,6 +65,20 @@ remove_lock();
 sub remove_lock
 {
     `rm -f $lock_file`;
+}
+
+# Create log files and store them in log_files directory1
+sub make_logs
+{
+    $date_string = strftime "%a_%b_%e_%H:%M:%S_%Y", localtime;
+    $logfile_name =  "$test_config{log_dir}/$date_string.txt";
+    `touch $logfile_name`;
+}
+
+sub print_to_log
+{
+    my ($message, $logfile) = @_;
+    `echo "$message" >> $logfile`;
 }
 
 # Takes the path to a file and updates the hash with all variables in the file name 
@@ -96,15 +115,23 @@ sub run_tests
             # Check if test script and configuration file is valid
             if(! -e $test_config{test_dir}."/".$test_script)
             {
-                print "Test script is not valid in row: $row\n";
+                print_to_log("Test script is not valid in row: $row\n", $logfile_name);
                 next;
             }
             if(! -e $test_config{config_dir}."/".$config_script)
             {
-                print "Config script is not valid in row: $row\n";
+                print_to_log("Config script is not valid in row: $row\n", $logfile_name);
                 next;
             }
+
             # Execute the file $num_of_test number of times
+            for(my $test_counter = 0;$test_counter < $num_of_tests; $test_counter++)
+            {
+                my $current_test_number = $test_counter + 1;
+                print_to_log("Now Starting Test $current_test_number\n",$logfile_name);
+                print_to_log("--------------------------------------\n\n", $logfile_name);
+                print_to_log(`perl $test_config{test_dir}/$test_script $test_config{test_dir}$config_dir`, $logfile_name);
+            }
         }
     }
 }
