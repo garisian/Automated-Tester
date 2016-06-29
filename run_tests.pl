@@ -75,12 +75,6 @@ sub make_logs
     `touch $logfile_name`;
 }
 
-sub print_to_log
-{
-    my ($message, $logfile) = @_;
-    `echo "$message" >> $logfile`;
-}
-
 # Takes the path to a file and updates the hash with all variables in the file name 
 sub make_hash
 {
@@ -116,11 +110,15 @@ sub run_tests
             if(! -e $test_config{test_dir}."/".$test_script)
             {
                 print_to_log("Test script is not valid in row: $row\n", $logfile_name);
+                $skipped_tests += 1;
+                $total_tests += 1;
                 next;
             }
             if(! -e $test_config{config_dir}."/".$config_script)
             {
                 print_to_log("Config script is not valid in row: $row\n", $logfile_name);
+                $skipped_tests += 1;
+                $total_tests += 1;
                 next;
             }
 
@@ -128,11 +126,33 @@ sub run_tests
             for(my $test_counter = 0;$test_counter < $num_of_tests; $test_counter++)
             {
                 my $current_test_number = $test_counter + 1;
-                print_to_log("Now Starting Test $current_test_number\n",$logfile_name);
-                print_to_log("--------------------------------------\n\n", $logfile_name);
-                print_to_log(`perl $test_config{test_dir}/$test_script $test_config{test_dir}$config_dir`, $logfile_name);
+                print_to_log("Now Starting Test $current_test_number",$logfile_name);
+                print_to_log("--------------------------------------", $logfile_name);
+                `perl $test_config{test_dir}/$test_script $test_config{test_dir}$config_dir $logfile_name`;
+                
+                # Check if a success statement was printed, implying htat the test was successful
+                my $success = `cat $logfile_name | tail -1`;
+                if (index($success, "SUCCESSED") != -1) {
+                    $tests_success += 1;
+                } 
+                else
+                {
+                    $tests_failed += 1;
+                }
+                # Check if testcase pass' and update respective elements
+                print_to_log("Finished Executing Test $current_test_number\n\n",$logfile_name);   
+                $total_tests += 1;   
+                $successfully_run += 1;         
             }
         }
     }
+
+    print_to_log("\n======================================",$logfile_name);
+    print_to_log("All tests are finished.",$logfile_name);
+    print_to_log("A total of $total_tests testcases were in the test list.",$logfile_name); 
+    print_to_log("A total of $skipped_tests were skipped.",$logfile_name); 
+    print_to_log("A total of $successfully_run were run",$logfile_name);   
+    print_to_log("        -- $tests_success passed",$logfile_name);   
+    print_to_log("        -- $tests_failed failed",$logfile_name);   
 }
 
