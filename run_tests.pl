@@ -37,6 +37,7 @@ use modules::Common::Com_utilities;
 
 # Indicate where the initialization variables for the main testframe is coming from
 my %test_config = (
+    test_dir => "test_files",
 	config_dir => "configuration_files",
 	config_file => "run_tests.cfg"
 );
@@ -69,17 +70,42 @@ sub make_hash
 # The function that extracts the variables in configuration_files/test_list.pl and runs each tests
 sub run_tests
 {
-    #open a file called configuration_files/test_lists.cfg   
-    #go through each line in the file that is not commented
-    #example: test_1.pl   test_1.cfg    *4    (hello my name is candy)
-    #inside the while loop, take each line and split in white space. 
-    #find a way to put configuration files into the testing condition
+    # Keep track of the status' of the tests for final report
+    my $successfully_run = 0;
+    my $skipped_tests = 0;
+    my $tests_failed = 0;
+    my $tests_success = 0;
+    my $total_tests = 0;
 
+    # Attempt to open the main test configuration file or send error message
     open(my $fh, "<",$test_config{config_dir}."/test_list.cfg" ) or die "cannot open test_list.cfg file";
     while(my $row = <$fh>)
     {
+        # Go through every line (test feature) that is not commented out
         chomp $row;
-        print "$row\n";
+        if ($row !~ '^#.')
+        {
+            # Split the line by white spaces or tabs
+            my @split_elements = split ' ', $row;
+            my $test_script = @split_elements[0];
+            my $config_script = @split_elements[1];
+            my $num_of_tests = @split_elements[2];
+            my $time_interval = @split_elements[3];
+            #print $test_config{config_dir}."/".$config_script;
+
+            # Check if test script and configuration file is valid
+            if(! -e $test_config{test_dir}."/".$test_script)
+            {
+                print "Test script is not valid in row: $row\n";
+                next;
+            }
+            if(! -e $test_config{config_dir}."/".$config_script)
+            {
+                print "Config script is not valid in row: $row\n";
+                next;
+            }
+            # Execute the file $num_of_test number of times
+        }
     }
 }
 
