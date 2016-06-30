@@ -37,7 +37,7 @@ for my $host (@hostList) {
 }
 $ping->close();
 
-my $result;
+
 # Downloading 2 images from the internet to see if file transfer is proper
 print_to_log("Attempting to download Penguin Image using curl", $log_file);
 `curl -vsO https://s-media-cache-ak0.pinimg.com/736x/56/84/89/5684890dba8b457cc0d04c6726ae6abf.jpg 2&>1 >/dev/null | less`;
