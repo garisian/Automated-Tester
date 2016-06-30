@@ -1,0 +1,42 @@
+
+Now Starting Test 1
+--------------------------------------
+hello
+Test Case SUCCESSED
+Finished Executing Test 1
+
+
+Test script is not valid in row: test_2.pl   test_1.cfg  3  60  # Should Fail since test_2.pl doesn't exist as test script
+
+Config script is not valid in row: test_1.pl   test_3.cfg  3  60  # Should Fail since test_3.cfg doesnt' exist as test config
+
+
+Now Starting Test 2
+--------------------------------------
+Successfully pinged www.google.com
+
+Successfully pinged www.github.com
+
+Successfully pinged www.youtube.com
+
+Attempting to download Penguin Image using curl
+Attempting to download Penguin Image using wget
+
+Image was successfully downloaded using curl. Removing file
+Image was successfully removed.
+Image was successfully downloaded using wget. Removing file
+Image was successfully removed.
+All images were successfully transfered and removed
+
+Test Case SUCCESSED
+Finished Executing Test 2
+
+
+
+======================================
+All tests are finished.
+A total of 4 testcases were in the test list.
+A total of 2 were skipped.
+A total of 2 were run
+        -- 2 passed
+        -- 0 failed
