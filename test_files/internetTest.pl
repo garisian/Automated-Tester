@@ -1,0 +1,38 @@
+#!/usr/bin/perl
+
+###################################
+# Include all packages being used #
+###################################
+use modules::Common::Com_utilities;           # Has common features that are predefined  
+use strict;
+use warnings;
+use Net::Ping;
+
+# Extract config file and log file from commandline
+my ($config_file, $log_file) = @ARGV;
+
+
+# Check if pinging to several websites works
+my @hostList = ( "www.google.com", "www.github.com", "www.youtube.com");
+
+my $ping = Net::Ping->new("tcp", 2);
+for my $host (@hostList) {
+	$ping->{'port_num'} = (getservbyname("http", "tcp") || 80);
+	if ($ping->ping($host)) {
+	    print_to_log("Successfully pinged $host\n", $log_file);
+	} 
+	else {
+	    print_to_log("Failed to ping $host\n", $log_file);
+	}
+
+	# Check to see if any of the pings fails so we can quit the testcase immediately
+    my $failures = `cat $log_file | grep "Failed to ping"| wc -l`;
+    if($failures != 0)
+    {
+	    print_to_log("Error in pinging to known host. Testcase is exiting\n", $log_file);
+		$ping->close();
+		status_print(0, $log_file);
+	    exit;	
+    }
+}
+$ping->close();
