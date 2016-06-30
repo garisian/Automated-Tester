@@ -42,13 +42,13 @@ $ping->close();
 print_to_log("Attempting to download Penguin Image using curl", $log_file);
 `curl -vsO https://s-media-cache-ak0.pinimg.com/736x/56/84/89/5684890dba8b457cc0d04c6726ae6abf.jpg 2&>1 >/dev/null | less`;
 
-print_to_log("Attempting to download Penguin Image using wget", $log_file);
+print_to_log("Attempting to download Penguin Image using wget\n", $log_file);
 `wget https://thumbs.dreamstime.com/x/angry-penguin-5095477.jpg 2&>1 >/dev/null`;
 
 # Checking to see if the images were successfully downloaded. If not, error has occured.
 if(-e "5684890dba8b457cc0d04c6726ae6abf.jpg")
 {
-    print_to_log("Image was successfully downloaded using curl. Removing file\n", $log_file);
+    print_to_log("Image was successfully downloaded using curl. Removing file", $log_file);
     `rm 5684890dba8b457cc0d04c6726ae6abf.jpg`;
     print_to_log("Image was successfully removed.", $log_file);
 }
@@ -60,13 +60,13 @@ else
 }
 if(-e "angry-penguin-5095477.jpg")
 {
-    print_to_log("Image was successfully downloaded using wget. Removing file\n", $log_file);
+    print_to_log("Image was successfully downloaded using wget. Removing file", $log_file);
     `rm angry-penguin-5095477.jpg`;
     print_to_log("Image was successfully removed.", $log_file);
 }
 else
 {
-	print_to_log("Image was unsuccessfully downloaded using wget. Error occured. Exiting Testcase", $log_file);
+	print_to_log("Image was unsuccessfully downloaded using wget. Error occured. Exiting Testcase\n", $log_file);
 	status_print(0, $log_file);
 	exit;
 }
