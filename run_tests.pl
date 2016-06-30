@@ -92,11 +92,13 @@ sub run_tests
 
     # Attempt to open the main test configuration file or send error message
     open(my $fh, "<",$test_config{config_dir}."/test_list.cfg" ) or die "cannot open test_list.cfg file";
+    
+    my $testNum = 1;
     while(my $row = <$fh>)
     {
-        # Go through every line (test feature) that is not commented out
+        # Go through every line (test feature) that is not commented out or has only whitespace
         chomp $row;
-        if ($row !~ '^#.')
+        if ($row !~ '^#.' and $row !~ /^\s*$/)
         {
             # Split the line by white spaces or tabs
             my @split_elements = split ' ', $row;
@@ -104,7 +106,6 @@ sub run_tests
             my $config_script = @split_elements[1];
             my $num_of_tests = @split_elements[2];
             my $time_interval = @split_elements[3];
-            #print $test_config{config_dir}."/".$config_script;
 
             # Check if test script and configuration file is valid
             if(! -e $test_config{test_dir}."/".$test_script)
@@ -125,8 +126,8 @@ sub run_tests
             # Execute the file $num_of_test number of times
             for(my $test_counter = 0;$test_counter < $num_of_tests; $test_counter++)
             {
-                my $current_test_number = $test_counter + 1;
-                print_to_log("Now Starting Test $current_test_number",$logfile_name);
+                my $current_test = $testNum + $test_counter;
+                print_to_log("\nNow Starting Test $current_test",$logfile_name);
                 print_to_log("--------------------------------------", $logfile_name);
                 `perl $test_config{test_dir}/$test_script $test_config{test_dir}$config_dir $logfile_name`;
                 
@@ -139,19 +140,23 @@ sub run_tests
                 {
                     $tests_failed += 1;
                 }
+
                 # Check if testcase pass' and update respective elements
-                print_to_log("Finished Executing Test $current_test_number\n\n",$logfile_name);   
+                print_to_log("Finished Executing Test $current_test\n\n",$logfile_name);   
                 $total_tests += 1;   
                 $successfully_run += 1;
                 if($test_counter+1 < $num_of_tests)
                 { 
+                    # If there are multiple scripts, then have the program sleep for the requested time
                     print_to_log("sleeping for $time_interval seconds\n\n",$logfile_name);  
                     sleep($time_interval);                    
                 }        
             }
+            $testNum += 1;
         }
     }
 
+    # Log the final statistics of all the tests that have been run/skipped
     print_to_log("\n======================================",$logfile_name);
     print_to_log("All tests are finished.",$logfile_name);
     print_to_log("A total of $total_tests testcases were in the test list.",$logfile_name); 
