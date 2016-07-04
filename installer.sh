@@ -6,6 +6,8 @@
 
 clear
 
+sudo apt-get update
+
 echo "Checking if perl is installed"
 OUTPUT="$(perl -v)"
 if [[ "${OUTPUT}" == *"command not found"* ]]
@@ -33,8 +35,10 @@ else
   echo "---Perl is already installed on this computer.";
 fi
 
-echo $PWD
+echo "Current Directory: $PWD"
 echo "Installing Perl dependencies"
-sudo apt-get install dtach
+sudo apt-get install dtach                     # used in run_tests.sh
+echo "Finished Installing Perl dependencies"
+
 
 echo "Finished Installation"
